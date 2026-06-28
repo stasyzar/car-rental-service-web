@@ -1,7 +1,58 @@
+import { 
+  createBrowserRouter, 
+  RouterProvider, 
+  Outlet, 
+  Navigate, 
+  Link 
+} from 'react-router-dom';
+import { HomePage } from './pages/HomePage';
+import { LoginPage } from './pages/LoginPage';
+import { AdminDashboard } from './pages/AdminDashboard';
+
+const RootLayout = () => (
+  <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
+    <header className="p-4 bg-white border-b border-slate-200 flex justify-between items-center sticky top-0 bg-background/80 backdrop-blur-sm z-50">
+      <Link to="/" className="font-extrabold text-xl tracking-tight text-indigo-600 hover:opacity-80 transition-opacity" style={{ fontFamily: 'var(--font-display)' }}>
+        DriveFleet
+      </Link>
+      <nav className="flex gap-6 font-semibold text-sm">
+        <Link to="/" className="text-slate-600 hover:text-indigo-600 transition-colors">Catalog</Link>
+        <Link to="/admin" className="text-slate-600 hover:text-indigo-600 transition-colors">Dashboard</Link>
+        <Link to="/login" className="text-indigo-600 hover:text-indigo-800 font-bold transition-colors">Sign In</Link>
+      </nav>
+    </header>
+
+    <main className="flex-1">
+      <Outlet /> 
+    </main>
+  </div>
+);
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <RootLayout />,
+    children: [
+      {
+        index: true,
+        element: <HomePage />
+      },
+      {
+        path: 'login',
+        element: <LoginPage />
+      },
+      {
+        path: 'admin',
+        element: <AdminDashboard />
+      }
+    ],
+  },
+  {
+    path: '*',
+    element: <Navigate to="/" replace />
+  },
+]);
+
 export default function App() {
-  return (
-    <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
-      <h1 className="text-3xl font-bold">Car Rental Service</h1>
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }
