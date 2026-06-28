@@ -5,4 +5,4 @@ export const HomePage = () => {
       <p className="text-muted-foreground">Тут буде список доступних автомобілів.</p>
     </div>
   );
-};
+}
