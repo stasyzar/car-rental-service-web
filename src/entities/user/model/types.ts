@@ -5,8 +5,8 @@ export interface UserLoginRequestDto {
     password: string;
 }
 
-export interface authResponseDto {
-    accessToken: string;
+export interface AuthResponseDto {
+    token: string;
     refreshToken: string;
 }
 
