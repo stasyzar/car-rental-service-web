@@ -16,10 +16,10 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 
 apiClient.interceptors.request.use(
     (config) => {
-        const accessToken = localStorage.getItem('accessToken');
+        const token = localStorage.getItem('token');
 
-        if (accessToken) {
-            config.headers.Authorization = `Bearer ${accessToken}`;
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
     },
@@ -46,19 +46,19 @@ apiClient.interceptors.response.use(
                     refreshToken,
                 });
 
-                const newAccessToken = response.data.token;
+                const token = response.data.token;
                 const newRefreshToken = response.data.refreshToken;
 
-                localStorage.setItem('accessToken', newAccessToken);
+                localStorage.setItem('token', token);
                 if (newRefreshToken) {
                     localStorage.setItem('refreshToken', newRefreshToken);
                 }
 
-                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                originalRequest.headers.Authorization = `Bearer ${token}`;
 
                 return apiClient(originalRequest);
             } catch (refreshError) {
-                localStorage.removeItem('accessToken');
+                localStorage.removeItem('token');
                 localStorage.removeItem('refreshToken');
 
                 window.dispatchEvent(new Event('auth-logout'));
