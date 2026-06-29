@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import { useAuthModalStore } from '../model/authModalStore';
+import { useAuthModalStore } from '@/features/auth/model/authModalStore';
 import { LoginContainer } from './LoginContainer';
 import { RegisterContainer } from './RegisterContainer';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/shared/ui/tabs';
