@@ -1,0 +1,172 @@
+import React, { useState } from 'react';
+import type { UserRegistrationRequestDto } from '@/entities/user/model/types';
+import { AlertCircle, User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+
+interface RegisterFormProps {
+  onSubmit: (data: UserRegistrationRequestDto) => void;
+  isLoading: boolean;
+  serverError?: string;
+}
+
+export const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, isLoading, serverError }) => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setValidationError(null);
+
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      setValidationError('Please fill in all fields.');
+      return;
+    }
+
+    if (password.length < 8) {
+      setValidationError('Password must be at least 8 characters long.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setValidationError('Passwords do not match.');
+      return;
+    }
+
+    onSubmit({
+      email,
+      firstName,
+      lastName,
+      password,
+      confirmPassword,
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4 text-left font-sans">
+      {(serverError || validationError) && (
+        <div className="p-3.5 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2 font-medium">
+          <AlertCircle size={15} className="shrink-0 text-red-500" />
+          <span>{validationError || serverError}</span>
+        </div>
+      )}
+
+      {/* Name Group */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1">
+          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+            First Name
+          </label>
+          <div className="relative">
+            <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <input
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="John"
+              className="w-full pl-10 pr-3.5 py-2.5 text-sm border border-slate-200 rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-slate-900"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-1">
+          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+            Last Name
+          </label>
+          <div className="relative">
+            <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <input
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Doe"
+              className="w-full pl-10 pr-3.5 py-2.5 text-sm border border-slate-200 rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-slate-900"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Email */}
+      <div className="space-y-1">
+        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+          Email Address
+        </label>
+        <div className="relative">
+          <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="john.doe@example.com"
+            className="w-full pl-10 pr-3.5 py-2.5 text-sm border border-slate-200 rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-slate-900"
+          />
+        </div>
+      </div>
+
+      {/* Password */}
+      <div className="space-y-1">
+        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+          Password
+        </label>
+        <div className="relative">
+          <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <input
+            type={showPassword ? 'text' : 'password'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            className="w-full pl-10 pr-10 py-2.5 text-sm border border-slate-200 rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-slate-900"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+          >
+            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Confirm Password */}
+      <div className="space-y-1">
+        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+          Confirm Password
+        </label>
+        <div className="relative">
+          <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <input
+            type={showConfirmPassword ? 'text' : 'password'}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="••••••••"
+            className="w-full pl-10 pr-10 py-2.5 text-sm border border-slate-200 rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-slate-900"
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+          >
+            {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Submit Button */}
+      <button
+        type="submit"
+        disabled={isLoading}
+        className="w-full py-3 px-4 border border-transparent rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-indigo-600 hover:bg-indigo-700 transition-all disabled:opacity-50 shadow-sm cursor-pointer mt-2"
+        style={{ fontFamily: 'var(--font-display)' }}
+      >
+        {isLoading ? 'Creating Account...' : 'Create Account'}
+      </button>
+    </form>
+  );
+};
+
+export default RegisterForm;
